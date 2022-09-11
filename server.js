@@ -54,7 +54,7 @@ app.delete('/api/products/:id', async(req, res, next) => {
     try{
         const deleteproduct = await Product.findByPk(req.params.id)
         await deleteproduct.destroy()
-        res.send(204)
+        res.sendStatus(204)
     }catch(error){
         next(error)
     }
