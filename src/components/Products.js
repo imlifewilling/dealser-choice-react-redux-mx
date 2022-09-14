@@ -25,22 +25,20 @@ const Products = () => {
     //decrease number of product
     const minusProduct = async(id) => {
         try{
-            const oldresponse = await axios.get(`/api/products/${id}`)
-            // console.log(oldresponse.data)
-            if (oldresponse.data['piece'] > 0) {
-                oldresponse.data['piece'] -= 1
+            let oldproductnumber = products.find(product => product.id === id).piece
+            console.log(oldproductnumber)
+            if (oldproductnumber > 0) {
+                oldproductnumber -= 1
             }else {
-                oldresponse.data['piece'] = 0
+                oldproductnumber = 0
             }
-            await axios.post(`/api/products/${id}`, oldresponse.data)
-                const response = await axios.get(`/api/products/${id}`)
-                // console.log(response.data)
-                dispatch(
-                {
-                    type: 'MODIFY_PRODUCT',
-                    product: response.data
-                }
-                )    
+            const response = await axios.put(`/api/products/${id}`, {piece: oldproductnumber})
+            dispatch(
+            {
+                type: 'MODIFY_PRODUCT',
+                product: response.data
+            }
+            )    
         }catch(error){
             console.log(error)
         }
@@ -49,12 +47,7 @@ const Products = () => {
     //increase number of product
     const plusProduct = async(id) => {
         try{
-            const oldresponse = await axios.get(`/api/products/${id}`)
-            // console.log(oldresponse.data)
-            oldresponse.data['piece'] += 1
-            await axios.post(`/api/products/${id}`, oldresponse.data)
-            const response = await axios.get(`/api/products/${id}`)
-            // console.log(response.data)
+            const response = await axios.put(`/api/products/${id}`, {piece: products.find(product => product.id === id).piece + 1})
             dispatch(
                 {
                     type: 'MODIFY_PRODUCT',
@@ -67,17 +60,16 @@ const Products = () => {
     }
 
     return (
-        <div>
+        <div id = 'productcomponent'>
             <h2>Products</h2>
             <ul id = 'productlist'>
                 {
                     products.filter(product => product.categoryId === hash).map(
                         product => {
                             return (
-                                <li key = {product.id}>
+                                <li key = {product.id} id = {product.categoryId === hash ? 'selecteditem' : ''}>
                                     <div>{product.name}</div>
                                     <div>${product.price} </div>
-                                    <div>{product.piece}</div>
                                     <div className="input-group">
                                         <button className="button-minus" data-field="quantity" onClick = {()=>minusProduct(product.id)}>-</button>
                                         <input step="1" value= {product.piece} className="quantity-field" />

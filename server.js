@@ -26,9 +26,11 @@ app.get('/api/products', async(req, res, next) => {
     }
 })
 
-app.get('/api/products/:id', async(req, res, next) => {
+app.put('/api/products/:id', async(req, res, next) => {
     try{
-        res.send(await Product.findByPk(req.params.id))
+        const product = await Product.findByPk(req.params.id)
+        await product.update(req.body)
+        res.send(product)
     }catch(error){
         next(error)
     }
@@ -42,13 +44,13 @@ app.post('/api/product', async(req, res, next) => {
     }
 })
 
-app.post('/api/products/:id', async(req, res, next) => {
-    try{
-        res.status(201).send((await Product.findByPk(req.params.id)).update(req.body))
-    }catch(error){
-        next(error)
-    }
-})
+// app.post('/api/products/:id', async(req, res, next) => {
+//     try{
+//         res.status(201).send((await Product.findByPk(req.params.id)).update(req.body))
+//     }catch(error){
+//         next(error)
+//     }
+// })
 
 app.delete('/api/products/:id', async(req, res, next) => {
     try{
